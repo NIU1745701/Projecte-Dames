@@ -26,10 +26,10 @@ public:
 	TipusFitxa getTipusFitxa() const { return m_tipus; }
 	ColorFitxa getColorFitxa() const { return m_color; }
 	int getNMovimentsValids() const { return m_nMovimentsValids; }
-	void setPosicio(const Posicio posicio) { m_posicio = posicio; }
+	void setPosicio(const Posicio& posicio) { m_posicio = posicio; }
 	void setPosicio(int fila, int columna) { m_posicio.setFila(fila); m_posicio.setColumna(columna); }
-	void setTipus(TipusFitxa tipus) { m_tipus = tipus; }
-	void setColor(ColorFitxa color) { m_color = color; }
+	void setTipus(const TipusFitxa& tipus) { m_tipus = tipus; }
+	void setColor(const ColorFitxa& color) { m_color = color; }
 	void convertirDama() { m_tipus = TIPUS_DAMA; }
 
 	void movimentsValids(Moviment movimentsValids[], int nMoviments) const;
