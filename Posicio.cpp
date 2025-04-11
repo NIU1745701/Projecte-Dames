@@ -7,6 +7,11 @@ void Posicio::posicioToString(string& posicio) const
 	posicio[1] = '1' + (N_FILES - 1) - m_fila;
 }
 
+Posicio::Posicio(const string& posicio)
+{
+	stringToPosicio(posicio);
+}
+
 void Posicio::stringToPosicio(const string& posicio)
 {
 	m_fila = (N_FILES - 1) - (posicio[1] - '1');
