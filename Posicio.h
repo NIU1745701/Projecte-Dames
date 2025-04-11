@@ -8,7 +8,7 @@ class Posicio
 {
 public:
 	Posicio() { m_fila = 0; m_columna = 0; }
-	Posicio(const string& posicio) { stringToPosicio(posicio, m_fila, m_columna); }
+	Posicio(const string& posicio);
 
 	int getFila() const { return m_fila; }
 	int getColumna() const { return m_columna; }
