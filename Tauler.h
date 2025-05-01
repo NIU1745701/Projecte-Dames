@@ -15,12 +15,14 @@ public:
 	void inicialitza(const string& nomFitxer);
 
 	void actualitzaMovimentsValids();
-	void getPosicionsPossibles(const Posicio& origen,
-		int& nPosicions, Posicio posicionsPossibles[]);
+	void getPosicionsPossibles(const Posicio& origen,int& nPosicions, Posicio posicionsPossibles[]);
 	bool mouFitxa(const Posicio& origen, const Posicio& desti);
 	string toString() const;
 	void bufarFitxa(ColorFitxa tornActual);
-
+	void getPosicionsSimples(const Posicio& origen, ColorFitxa color, TipusFitxa tipus, int& nPosicions, Posicio posicions[]) const;
+	bool esCaptura(const Posicio& origen, const Posicio& desti) const;
+	Posicio getFitxaCapturada(const Posicio& origen, const Posicio& desti) const;
+	bool Tauler::esPosicioValida(int fila, int columna) const;
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
 

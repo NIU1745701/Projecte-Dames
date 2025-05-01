@@ -246,3 +246,81 @@ string Tauler::toString() const
 	resultat += "  ABCDEFGH\n";
 	return resultat;
 }
+void Tauler::getPosicionsSimples(const Posicio& origen, ColorFitxa color, TipusFitxa tipus, int& nPosicions, Posicio posicions[]) const
+{
+	nPosicions = 0;
+	int direccions[4][2] = { {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
+
+	for (int d = 0; d < 4; ++d) 
+	{
+		int df = direccions[d][0];
+		int dc = direccions[d][1];
+
+		if (tipus == TIPUS_NORMAL)
+		{
+			bool direccioValida = (color == COLOR_BLANC && df < 0) ||(color == COLOR_NEGRE && df > 0);
+
+			if (direccioValida) 
+			{
+				int nf = origen.fila + df;
+				int nc = origen.columna + dc;
+				if (esPosicioValida(nf, nc) && m_tauler[nf][nc].getTipus() == TIPUS_EMPTY) 
+				{
+					posicions[nPosicions++] = Posicio(nf, nc);
+				}
+			}
+		}
+		// Per a dames
+		else 
+			if (tipus == TIPUS_DAMA) 
+			{
+				int nf = origen.fila + df;
+				int nc = origen.columna + dc;
+				while (esPosicioValida(nf, nc) && m_tauler[nf][nc].getTipus() == TIPUS_EMPTY) 
+				{
+					posicions[nPosicions++] = Posicio(nf, nc);
+					nf += df;
+					nc += dc;
+				}
+			}
+	}
+}
+bool Tauler::esCaptura(const Posicio& origen, const Posicio& desti) const
+{
+	int df = desti.fila - origen.fila;
+	int dc = desti.columna - origen.columna;
+
+	if ((df == 2 || df == -2) && (dc == 2 || dc == -2))
+	{
+		int fIntermedia = origen.fila + df / 2;
+		int cIntermedia = origen.columna + dc / 2;
+		const Fitxa& fitxaOr = m_tauler[origen.fila][origen.columna];
+		const Fitxa& fitxaSaltada = m_tauler[fIntermedia][cIntermedia];
+
+		return fitxaSaltada.getTipus() != TIPUS_EMPTY && fitxaSaltada.getColor() != fitxaOr.getColor();
+	}
+	return false;
+}
+Posicio Tauler::getFitxaCapturada(const Posicio& origen, const Posicio& desti) const
+{
+	int df = desti.fila - origen.fila;
+	int dc = desti.columna - origen.columna;
+
+
+	if ((df == 2 || df == -2) && (dc == 2 || dc == -2))
+	{
+		int fIntermedia = origen.fila + df / 2;
+		int cIntermedia = origen.columna + dc / 2;
+		return Posicio(fIntermedia, cIntermedia);
+	}
+	else
+	{
+		return Posicio(-1, -1); // posición no válida
+	}
+}
+bool Tauler::esPosicioValida(int fila, int columna) const 
+{
+	return fila >= 0 && fila < N_FILES && columna >= 0 && columna < N_COLUMNES;
+}
+
+

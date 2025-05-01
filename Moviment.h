@@ -15,7 +15,7 @@ public:
 	}
 	void AfegirPosicio(const Posicio posicio);
 	void AfegirFitxaEliminada(const Posicio posicio);
-	int getnPosicions() const { return m_nPosicions; }
+	int getNPosicions() const { return m_nPosicions; }
 	int getnFitxesEliminades() const { return m_nFitxesEliminades; }
 	void getInici(int& fila, int& columna) const;
 	void getFinal(int& fila, int& columna) const;

@@ -32,7 +32,7 @@ public:
 	void setColor(const ColorFitxa& color) { m_color = color; }
 	void convertirDama() { m_tipus = TIPUS_DAMA; }
 
-	void movimentsValids(Moviment movimentsValids[], int nMoviments) const;
+	void actualitzaMovimentsValids(const Posicio& posicioInicial, const Tauler& tauler);
 	
 private:
 	Posicio m_posicio;
