@@ -1,6 +1,6 @@
 #include "Posicio.h"
 #include "Moviment.h"
-#define MAX_MOVIMENTS 12
+#define MAX_MOVIMENTS 20
 
 typedef enum
 {

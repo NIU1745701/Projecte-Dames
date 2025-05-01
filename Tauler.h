@@ -6,6 +6,7 @@ using namespace std;
 
 #define N_FILES 8
 #define N_COLUMNES 8
+#define MAX_MOVIMENTS 20
 
 class Tauler
 {
@@ -18,7 +19,7 @@ public:
 		int& nPosicions, Posicio posicionsPossibles[]);
 	bool mouFitxa(const Posicio& origen, const Posicio& desti);
 	string toString() const;
-
+	void bufarFitxa(ColorFitxa tornActual);
 
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
