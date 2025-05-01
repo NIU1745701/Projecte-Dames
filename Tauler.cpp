@@ -129,106 +129,124 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 	Fitxa& fitxa = m_tauler[origen.getFila()][origen.getColumna()];
 	if (fitxa.getTipusFitxa() == TIPUS_EMPTY) return false;
 
-	bool movimentValid = false;
-	Posicio moviments[MAX_MOVIMENTS];
+	Moviment moviments[MAX_MOVIMENTS];
 	int nMovs = 0;
-
 	fitxa.movimentsValids(moviments, nMovs);
 
-	for (int i = 0; i < nMovs; ++i) 
+	Moviment movimentFet;
+	bool movimentValid = false;
+
+	for (int i = 0; i < nMovs; ++i)
 	{
-		if (moviments[i] == desti) 
+		if (moviments[i].getFinal() == desti)
 		{
+			movimentFet = moviments[i];
 			movimentValid = true;
 			break;
 		}
 	}
-
-	if (!movimentValid) 
+	if (!movimentValid)
 		return false;
-
-	// Comprobar si fitxa ha matado a alguien (si la diferencia de movimiento = 2 significa que ha saltado a alguien y lo ha matado)
-	int df = desti.getFila() - origen.getFila();
-	int dc = desti.getColumna() - origen.getColumna();
-	bool haCapturat = false;
-
-	if ((df == 2 || df == -2) && (dc == 2 || dc == -2))
+	
+	int nCaptures = movimentFet.getnFitxesEliminades();
+	for (int i = 0; i < nCaptures; i++)
 	{
-		int fCaptura = origen.fila + df / 2;
-		int cCaptura = origen.columna + dc / 2;
-
-		Fitxa& fitxaCapturada = m_tauler[fCaptura][cCaptura];
-		if (fitxaCapturada.getColorFitxa() != fitxa.getColorFitxa() && fitxaCapturada.getTipusFitxa() != TIPUS_EMPTY) 
-		{
-			m_tauler[fCaptura][cCaptura] = Fitxa();
-			haCapturat = true;
-		}
+		int f = movimentFet.getFilaFitxaEliminada(i);
+		int c = movimentFet.getColFitxaEliminada(i);
+		m_tauler[f][c] = Fitxa();
 	}
 
-	m_tauler[desti.fila][desti.columna] = fitxa;
-	m_tauler[origen.fila][origen.columna] = Fitxa();
+	m_tauler[desti.getFila()][desti.getColumna()] = fitxa;
+	m_tauler[origen.getFila()][origen.getColumna()] = Fitxa();
 
-	//Convertir en dama
-	if (fitxa.getTipusFitxa() == TIPUS_NORMAL) 
+	if (fitxa.getTipusFitxa() == TIPUS_NORMAL)
 	{
 		if ((fitxa.getColorFitxa() == COLOR_BLANC && desti.getFila() == 0) || (fitxa.getColorFitxa() == COLOR_NEGRE && desti.getFila() == 7))
 		{
 			m_tauler[desti.getFila()][desti.getColumna()].convertirEnDama();
 		}
 	}
-
-	if (!haCapturat) 
-	{
-		actualitzaMovimentsValids(); 
-		bufarFitxa(fitxa.getColor());
-	}
-
+	actualitzaMovimentsValids();
+	bufarFitxa(origen, movimentFet, fitxa.getColorFitxa());
 	return true;
 }
-void Tauler::bufarFitxa(ColorFitxa tornActual) 
+
+void Tauler::bufarFitxa(const Posicio& origenMoviment, const Moviment& movimentFet, ColorFitxa tornActual)
 {
-	int maxCaptures = 0;
-	int maxDamesCapturades = 0;
-	Posicio fitxaBufada;
+	int capturesFetes = movimentFet.getnFitxesEliminades();
+	int damesFetes = movimentFet.getNumDamesCapturades(m_tauler);
+
+	int maxCaptures = capturesFetes;
+	int maxDames = damesFetes;
+
+	Posicio millorFitxa;
 	bool trobat = false;
 
 	for (int fila = 0; fila < N_FILES; fila++) 
 	{
 		for (int col = 0; col < N_COLUMNES; col++) 
 		{
-			Fitxa& f = m_tauler[fila][col];
-			if (f.getColorFitxa() == tornActual && f.getTipusFitxa() != TIPUS_EMPTY) 
+			const Fitxa& f = m_tauler[fila][col];
+			if (f.getColorFitxa() == tornActual && f.getTipusFitxa() != TIPUS_EMPTY)
 			{
-				Moviment movs[MAX_MOVIMENTS];
-				int nMovs = 0;
-				f.getMovimentsValids(movs, nMovs);
-
-				for (int i = 0; i < nMovs; i++) 
+				Moviment millor = getMillorMovimentDeFitxa(fila, col);
+				if (millor.esCaptura()) 
 				{
-					if (movs[i].esCaptura()) 
-					{
-						int nCaptures = movs[i].getnFitxesEliminades();
-						int nDames = movs[i].getNumDamesCapturades(m_tauler);
+					int captures = millor.getnFitxesEliminades();
+					int dames = millor.getNumDamesCapturades(m_tauler);
+					bool millorQueFet = (captures > maxCaptures) || (captures == maxCaptures && dames > maxDames);
 
-						if (nCaptures > maxCaptures ||	(nCaptures == maxCaptures && nDames > maxDamesCapturades)) 
-						{
-							maxCaptures = nCaptures;
-							maxDamesCapturades = nDames;
-							fitxaBufada = Posicio(fila, col);
-							trobat = true;
-						}
+					//Actualitzar el nmax si hi ha un millor moviment i no es la fitxa que ja s'ha mogut
+					if (millorQueFet && !(fila == origenMoviment.getFila() && col == origenMoviment.getColumna())) 
+					{
+						maxCaptures = captures;
+						maxDames = dames;
+						millorFitxa = Posicio(fila, col);
+						trobat = true;
 					}
 				}
 			}
 		}
 	}
-
 	if (trobat) 
 	{
-		m_tauler[fitxaBufada.getFila()][fitxaBufada.getColumna()] = Fitxa();
-		cout << "Fitxa bufada a " << fitxaBufada.toString() << endl;
+		m_tauler[millorFitxa.getFila()][millorFitxa.getColumna()] = Fitxa();
+		std::cout << "Fitxa bufada a " << millorFitxa.toString() << std::endl;
 	}
 }
+
+Moviment Tauler::getMillorMovimentDeFitxa(int fila, int col) const 
+{
+	Moviment millor;
+	int maxCaptures = 0;
+	int maxDames = 0;
+
+	const Fitxa& f = m_tauler[fila][col];
+	if (f.getTipusFitxa() == TIPUS_EMPTY) 
+		return millor;
+
+	Moviment movs[MAX_MOVIMENTS];
+	int nMovs = 0;
+	f.getMovimentsValids(movs, nMovs);
+
+	for (int i = 0; i < nMovs; i++) 
+	{
+		if (movs[i].esCaptura()) 
+		{
+			int captures = movs[i].getnFitxesEliminades();
+			int dames = movs[i].getNumDamesCapturades(m_tauler);
+
+			if (captures > maxCaptures || (captures == maxCaptures && dames > maxDames))
+			{
+				maxCaptures = captures;
+				maxDames = dames;
+				millor = movs[i];
+			}
+		}
+	}
+	return millor;
+}
+
 string Tauler::toString() const
 {
 	string resultat;

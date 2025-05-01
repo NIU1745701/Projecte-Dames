@@ -22,7 +22,8 @@ public:
 	void getPosicionsSimples(const Posicio& origen, ColorFitxa color, TipusFitxa tipus, int& nPosicions, Posicio posicions[]) const;
 	bool esCaptura(const Posicio& origen, const Posicio& desti) const;
 	Posicio getFitxaCapturada(const Posicio& origen, const Posicio& desti) const;
-	bool Tauler::esPosicioValida(int fila, int columna) const;
+	bool esPosicioValida(int fila, int columna) const;
+	Moviment getMillorMovimentDeFitxa(int fila, int col) const;
 private:
 	Fitxa m_tauler[N_FILES][N_COLUMNES];
 
