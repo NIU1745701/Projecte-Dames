@@ -2,76 +2,76 @@
 
 Fitxa::Fitxa(Posicio posicioInicial, TipusFitxa tipus, ColorFitxa color)
 {
-	m_posicio = posicioInicial;
-	m_tipus = tipus;
-	m_color = color;
-	m_nMovimentsValids = 0;
+    m_posicio = posicioInicial;
+    m_tipus = tipus;
+    m_color = color;
+    m_nMovimentsValids = 0;
 }
 
 Fitxa::Fitxa(TipusFitxa tipus, ColorFitxa color)
 {
-	m_tipus = tipus;
-	m_color = color;
-	m_nMovimentsValids = 0;
-}
-
-void Fitxa::actualitzaMovimentsValids(const Posicio& posicioInicial, const Tauler& tauler)
-{
+    m_tipus = tipus;
+    m_color = color;
     m_nMovimentsValids = 0;
+}
 
-    Moviment movimentsPendents[50];
-    int nPendents = 0;
+string Fitxa::toString() const
+{
+    string caracter;
 
-    Moviment movimentInicial(posicioInicial.getFila(), posicioInicial.getColumna());
-    movimentsPendents[nPendents++] = movimentInicial;
+    TipusFitxa tipus = getTipusFitxa();
+    ColorFitxa color = getColorFitxa();
 
-    while (nPendents > 0)
+    switch (tipus)
     {
-        Moviment movimentActual = movimentsPendents[--nPendents]; // Sacamos el último
-        Posicio posActual = movimentActual.getFinal();
+    case TIPUS_EMPTY:
+        caracter = '_';
+        break;
 
-        Posicio posValides[4]; // máximo 4 direcciones (diagonales)
-        int nPosValides = 0;
-        tauler.getPosicionsPossibles(posActual, nPosValides, posValides);
-
-        if (nPosValides == 0) 
+    case TIPUS_NORMAL:
+        if (color == COLOR_BLANC)
         {
-            if (movimentActual.getNPosicions() > 1)
-            {
-                m_moviments[m_nMovimentsValids++] = movimentActual;
-            }
+            caracter = 'O';
         }
-        else 
+        else
         {
-            for (int i = 0; i < nPosValides; i++) 
-            {
-                Moviment nouMoviment = movimentActual; // duplicamos el actual
-                nouMoviment.afegirPosicio(posValides[i]);
-
-                // Si la nova posició implica una captura, afegir la fitxa menjada
-                if (tauler.esCaptura(posActual, posValides[i])) 
-                {
-                    Posicio menjada = tauler.getFitxaCapturada(posActual, posValides[i]);
-                    nouMoviment.AfegirFitxaEliminada(menjada);
-                }
-                movimentsPendents[nPendents++] = nouMoviment;
-            }
+            caracter = 'X';
         }
+        break;
+
+    case TIPUS_DAMA:
+        if (color == COLOR_BLANC)
+        {
+            caracter = 'D';
+        }
+        else
+        {
+            caracter = 'R';
+        }
+        break;
+
+    default:
+        break;
     }
 
-    // Si no hay capturas múltiples, también añadimos movimientos simples
-    if (m_numMoviments == 0) 
-    {
-        Posicio posValides[4];
-        int nPosValides = 0;
-        tauler.getPosicionsSimples(posicioInicial, m_color, m_tipus, nPosValides, posValides);
+    return caracter;
+}
 
-        for (int i = 0; i < nPosValides; i++)
-        {
-            Moviment m(posicioInicial);
-            m.afegirPosicio(posValides[i]);
-            m_moviments[m_numMoviments++] = m;
-        }
+void Fitxa::setMovimentsValids(const Moviment movimentsValids[], int nMoviments)
+{
+    int i;
+
+    for (i = 0; i < nMoviments; i++)
+    {
+        m_movimentsValids[i] = movimentsValids[i];
     }
 }
 
+void Fitxa::getMovimentsValids(Moviment moviments[]) const
+{
+    int i;
+    for (i = 0; i < m_nMovimentsValids; i++)
+    {
+        moviments[i] = m_movimentsValids[i];
+    }
+}

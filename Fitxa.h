@@ -1,6 +1,8 @@
 #include "Posicio.h"
 #include "Moviment.h"
-#define MAX_MOVIMENTS 20
+#include <fstream>
+#include <string>
+#define MAX_MOVIMENTS 12
 
 typedef enum
 {
@@ -26,18 +28,108 @@ public:
 	TipusFitxa getTipusFitxa() const { return m_tipus; }
 	ColorFitxa getColorFitxa() const { return m_color; }
 	int getNMovimentsValids() const { return m_nMovimentsValids; }
+	void getMovimentsValids(Moviment moviments[]) const;
+	string toString() const;
 	void setPosicio(const Posicio& posicio) { m_posicio = posicio; }
 	void setPosicio(int fila, int columna) { m_posicio.setFila(fila); m_posicio.setColumna(columna); }
 	void setTipus(const TipusFitxa& tipus) { m_tipus = tipus; }
 	void setColor(const ColorFitxa& color) { m_color = color; }
 	void convertirDama() { m_tipus = TIPUS_DAMA; }
+	void setMovimentsValids(const Moviment movimentsValids[], int nMoviments);
 
-	void actualitzaMovimentsValids(const Posicio& posicioInicial, const Tauler& tauler);
-	
 private:
 	Posicio m_posicio;
 	TipusFitxa m_tipus;
 	ColorFitxa m_color;
+
 	Moviment m_movimentsValids[MAX_MOVIMENTS];
 	int m_nMovimentsValids;
 };
+
+ifstream& operator >>(ifstream& input, Fitxa& fitxa)
+{
+	char tipus;
+	Posicio posicio;
+
+	input >> tipus >> posicio;
+
+	fitxa.setPosicio(posicio);
+
+	TipusFitxa tipusFitxa;
+	ColorFitxa colorFitxa;
+
+	switch (tipus)
+	{
+	case 'O':
+		tipusFitxa = TIPUS_NORMAL;
+		colorFitxa = COLOR_BLANC;
+		break;
+
+	case 'X':
+		tipusFitxa = TIPUS_NORMAL;
+		colorFitxa = COLOR_NEGRE;
+		break;
+
+	case 'D':
+		tipusFitxa = TIPUS_DAMA;
+		colorFitxa = COLOR_BLANC;
+		break;
+
+	case 'R':
+		tipusFitxa = TIPUS_DAMA;
+		colorFitxa = COLOR_NEGRE;
+		break;
+
+	default:
+		break;
+	}
+
+	fitxa.setColor(colorFitxa);
+	fitxa.setTipus(tipusFitxa);
+
+	return input;
+}
+
+istream& operator >>(istream& input, Fitxa& fitxa)
+{
+	char tipus;
+	Posicio posicio;
+
+	input >> tipus >> posicio;
+
+	fitxa.setPosicio(posicio);
+
+	TipusFitxa tipusFitxa;
+	ColorFitxa colorFitxa;
+
+	switch (tipus)
+	{
+	case 'O':
+		tipusFitxa = TIPUS_NORMAL;
+		colorFitxa = COLOR_BLANC;
+		break;
+
+	case 'X':
+		tipusFitxa = TIPUS_NORMAL;
+		colorFitxa = COLOR_NEGRE;
+		break;
+
+	case 'D':
+		tipusFitxa = TIPUS_DAMA;
+		colorFitxa = COLOR_BLANC;
+		break;
+
+	case 'R':
+		tipusFitxa = TIPUS_DAMA;
+		colorFitxa = COLOR_NEGRE;
+		break;
+
+	default:
+		break;
+	}
+
+	fitxa.setColor(colorFitxa);
+	fitxa.setTipus(tipusFitxa);
+
+	return input;
+}
