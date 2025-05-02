@@ -17,7 +17,7 @@ void Tauler::inicialitzaEmpty()
 	int i, j;
 	for (i = 0; i < N_FILES; i++)
 	{
-		for (j = 0; i < N_COLUMNES; j++)
+		for (j = 0; j < N_COLUMNES; j++)
 		{
 			fitxa.setPosicio(i, j);
 			afegeixFitxa(fitxa);
@@ -34,11 +34,11 @@ void Tauler::inicialitza(const string& nomFitxer)
 
 	Fitxa fitxa;
 
-	while (!fitxer.eof())
+	while (fitxer >> fitxa)
 	{
-		fitxer >> fitxa;
 		afegeixFitxa(fitxa);
 	}
+
 
 	fitxer.close();
 }
@@ -52,19 +52,20 @@ string Tauler::toString() const
 	int i, j;
 	for (i = N_FILES - 1; i >= 0; i--)
 	{
-		tauler = tauler + to_string(i + 1) + ": ";
+		tauler += to_string(i + 1) + ": ";
 
 		for (j = 0; j < N_COLUMNES; j++)
 		{
-			tauler = tauler + m_tauler[i][j].toString();
+			tauler += m_tauler[i][j].toString() + " ";
 		}
 
-		tauler = tauler + "\n";
+		tauler += "\n";
 	}
 
-	tauler = tauler + " A B C D E F G H";
+	tauler += "  a b c d e f g h";
 	return tauler;
 }
+
 
 //Metodes per moure fitxa
 
@@ -307,6 +308,8 @@ int Tauler::getNumDamesCapturades(const Moviment& moviment) const
 void Tauler::getPosicionsPossibles(const Posicio& origen,
 	int& nPosicions, Posicio posicionsPossibles[])
 {
+	actualitzaMovimentsValids();
+
 	Moviment moviments[MAX_MOVIMENTS];
 
 	nPosicions = m_tauler[origen.getFila()][origen.getColumna()].getNMovimentsValids();
@@ -367,141 +370,115 @@ void Tauler::trobaMovimentsValids(Fitxa& fitxa)
 
 void Tauler::trobaMovimentsValidsNormal(const Posicio& posicio, ColorFitxa color, Moviment moviments[], int& nMoviments)
 {
-	nMoviments = 0;
-	Moviment pendents[50];
+	Moviment movimentsPendents[50];
 	int nPendents = 0;
+	int incrementPendents = 0;
 
-	Moviment inicial;
-	inicial.afegirPosicio(posicio);
-
-	pendents[nPendents++] = inicial;
-
-	while (nPendents > 0)
-	{
-		Moviment movimentActual = pendents[--nPendents];
-		Posicio posicioActual = movimentActual.getFinal();
-		Posicio posValides[4];
-		int nValides = 0;
-		posicionsValidesNormal(posicioActual, color, posValides, nValides);
-
-		while (nValides > 0)
-		{
-			movimentActual.afegirPosicio(posValides[0]);
-
-			for (int i = 1; i < nValides; i++)
-			{
-				Moviment duplicat = movimentActual;
-				duplicat.afegirPosicio(posValides[i]);
-				pendents[nPendents++] = duplicat;
-			}
-
-			posicioActual = posValides[0];
-			posicionsValidesNormal(posicioActual, color, posValides, nValides);
-		}
-
-		if (movimentActual.getnPosicions() > 1)
-		{
-			moviments[nMoviments++] = movimentActual;
-		}
-	}
-	if (nMoviments == 0)
-	{
-		Posicio posSimples[4];
-		int nSimples = 0;
-		posicionsValidesNormal(posicio, color, posSimples, nSimples);
-
-		for (int i = 0; i < nSimples; i++)
-		{
-			Moviment m(posicio);
-			m.afegirPosicio(posSimples[i]);
-			moviments[nMoviments++] = m;
-		}
-	}
-}
-
-void Tauler::trobaMovimentsValidsDama(const Posicio& posicioInicial, ColorFitxa color, Moviment moviments[], int& nMoviments)
-{
 	nMoviments = 0;
-	Moviment pendents[50];
-	int nPendents = 0;
 
-	Moviment inicial(posicioInicial);
-	pendents[nPendents++] = inicial;
+	Moviment movimentPendent;
+	Moviment movimentActual;
+	movimentActual.afegirPosicio(posicio);
+	movimentsPendents[nPendents++] = movimentActual;
 
-	while (nPendents > 0)
+	Posicio posicioActual = posicio;
+	Posicio posicionsValides[2];
+	Posicio eliminada;
+	int i;
+
+	do
 	{
-		Moviment movimentActual = pendents[--nPendents];
-		Posicio posicioActual = movimentActual.getFinal();
-		Posicio posValides[4];
-		int nValides = 0;
-		posicionsValidesDama(posicioActual, color, posValides, nValides);
+		movimentActual = movimentsPendents[0];
+		for (i = 1; i < nPendents; ++i)
+			movimentsPendents[i - 1] = movimentsPendents[i];
+		--nPendents;
 
-		bool haCapturat = false;
+		posicioActual = movimentActual.getFinal();
 
-		for (int i = 0; i < nValides; i++)
+		posicionsValidesNormal(posicioActual, color, posicionsValides, incrementPendents);
+
+		while (incrementPendents > 0)
 		{
-			Posicio desti = posValides[i];
-			int difFila = abs(desti.getFila() - posicioActual.getFila());
-			int difCol = abs(desti.getColumna() - posicioActual.getColumna());
+			movimentActual.afegirPosicio(posicionsValides[0]);
+			if (mataFitxa(posicioActual, posicionsValides[0], eliminada))
+				movimentActual.afegirFitxaEliminada(eliminada);
 
-			if (difFila == 2 && difCol == 2)
+			for (i = 1; i < incrementPendents; ++i)
 			{
-				Moviment nouMoviment = movimentActual;
-				nouMoviment.afegirPosicio(desti);
-				Posicio eliminada;
-				nouMoviment.afegirFitxaEliminada(eliminada);
-				pendents[nPendents++] = nouMoviment;
-				haCapturat = true;
-			}
-		}
-
-		if (haCapturat)
-		{
-			Posicio novaPosicio = movimentActual.getFinal();
-			Posicio posCaptura[4];
-			int nCaptura = 0;
-			posicionsValidesDama(novaPosicio, color, posCaptura, nCaptura);
-
-			for (int i = 0; i < nCaptura; i++)
-			{
-				Posicio desti = posCaptura[i];
-				int difFila = abs(desti.getFila() - novaPosicio.getFila());
-				int difCol = abs(desti.getColumna() - novaPosicio.getColumna());
-
-				if (difFila == 2 && difCol == 2)
+				movimentPendent = movimentActual;
+				movimentPendent.afegirPosicio(posicionsValides[i]);
+				if (mataFitxa(posicioActual, posicionsValides[i], eliminada))
 				{
-					Moviment capturaSeguent = movimentActual;
-					capturaSeguent.afegirPosicio(desti);
-					pendents[nPendents++] = capturaSeguent;
+					movimentPendent.afegirFitxaEliminada(eliminada);
 				}
+				if (nPendents < 50)
+					movimentsPendents[nPendents++] = movimentPendent;
 			}
-		}
-		else
-		{
-			if (movimentActual.getnPosicions() > 1)
-				moviments[nMoviments++] = movimentActual;
-		}
-	}
 
-	if (nMoviments == 0)
+			posicioActual = posicionsValides[0];
+			posicionsValidesNormal(posicioActual, color, posicionsValides, incrementPendents);
+		}
+
+		if (!(movimentActual.getFinal() == movimentActual.getInici()))
+			moviments[nMoviments++] = movimentActual;
+
+	} while (nPendents > 0);
+}
+void Tauler::trobaMovimentsValidsDama(const Posicio& posicio, ColorFitxa color, Moviment moviments[], int& nMoviments)
+{
+	Moviment movimentsPendents[50];
+	int nPendents = 0;
+	int incrementPendents = 0;
+
+	nMoviments = 0;
+
+	Moviment movimentPendent;
+	Moviment movimentActual;
+	movimentActual.afegirPosicio(posicio);
+	movimentsPendents[nPendents++] = movimentActual;
+
+	Posicio posicioActual = posicio;
+	Posicio posicionsValides[2];
+	Posicio eliminada;
+	int i;
+
+	do
 	{
-		Posicio posSimples[4];
-		int nSimples = 0;
-		posicionsValidesDama(posicioInicial, color, posSimples, nSimples);
+		movimentActual = movimentsPendents[0];
+		for (i = 1; i < nPendents; ++i)
+			movimentsPendents[i - 1] = movimentsPendents[i];
+		--nPendents;
 
-		for (int i = 0; i < nSimples; i++)
+		posicioActual = movimentActual.getFinal();
+
+		posicionsValidesDama(posicioActual, color, posicionsValides, incrementPendents);
+
+		while (incrementPendents > 0)
 		{
-			int difFila = abs(posSimples[i].getFila() - posicioInicial.getFila());
-			int difCol = abs(posSimples[i].getColumna() - posicioInicial.getColumna());
+			movimentActual.afegirPosicio(posicionsValides[0]);
+			if (mataFitxa(posicioActual, posicionsValides[0], eliminada))
+				movimentActual.afegirFitxaEliminada(eliminada);
 
-			if (difFila == 1 && difCol == 1)
+			for (i = 1; i < incrementPendents; ++i)
 			{
-				Moviment m(posicioInicial);
-				m.afegirPosicio(posSimples[i]);
-				moviments[nMoviments++] = m;
+				movimentPendent = movimentActual;
+				movimentPendent.afegirPosicio(posicionsValides[i]);
+				if (mataFitxa(posicioActual, posicionsValides[i], eliminada))
+				{
+					movimentPendent.afegirFitxaEliminada(eliminada);
+				}
+				if (nPendents < 50)
+					movimentsPendents[nPendents++] = movimentPendent;
 			}
+
+			posicioActual = posicionsValides[0];
+			posicionsValidesDama(posicioActual, color, posicionsValides, incrementPendents);
 		}
-	}
+
+		if (!(movimentActual.getFinal() == movimentActual.getInici()))
+			moviments[nMoviments++] = movimentActual;
+
+	} while (nPendents > 0);
 }
 
 void Tauler::posicionsValidesNormal(const Posicio& posicio, ColorFitxa color, Posicio posicions[], int& nPosicions)
@@ -728,10 +705,22 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color, Posi
 	}
 }
 
-bool Tauler::mataFitxa(const Posicio& inicial, const Posicio & final)
+bool Tauler::mataFitxa(const Posicio& inicial, const Posicio & final, Posicio& morta)
 {
-	bool mata = false;
-	if (final.getColumna() > inicial.getColumna() + 1 || final.getColumna() > inicial.getColumna() - 1)
-		mata = true;
-	return mata;
+	// Càlcul desplaçament files i columnes
+	int despFila = final.getFila() - inicial.getFila();
+	int despColumna = final.getColumna() - inicial.getColumna();
+
+	// Només és una captura si es mou dues caselles en diagonal
+	if (abs(despFila) == 2 && abs(despColumna) == 2)
+	{
+		// Posició de la fitxa morta (punt mig del salt)
+		int filaMitja = inicial.getFila() + despFila / 2;
+		int colMitja = inicial.getColumna() + despColumna / 2;
+
+		// Assignem la posició de la fitxa capturada
+		morta = Posicio(filaMitja, colMitja);
+		return true;
+	}
+	return false;
 }

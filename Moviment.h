@@ -16,6 +16,9 @@ public:
 
 	int getnPosicions() const { return m_nPosicions; }
 	int getnFitxesEliminades() const { return m_nFitxesEliminades; }
+	void setInici(const Posicio& inici);
+	void setFinal(const Posicio & final);
+	void setNFitxesEliminades(int n);
 	void getInici(int& fila, int& columna) const;
 	Posicio getInici() const;
 	void getFinal(int& fila, int& columna) const;

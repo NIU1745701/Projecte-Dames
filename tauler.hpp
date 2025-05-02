@@ -42,5 +42,5 @@ private:
 	void trobaMovimentsValidsDama(const Posicio& posicio, ColorFitxa color, Moviment moviments[], int& nMoviments);
 	void posicionsValidesNormal(const Posicio& posicio, ColorFitxa color, Posicio posicions[], int& nPosicions);
 	void posicionsValidesDama(const Posicio& posicio, ColorFitxa color, Posicio posicions[], int& nPosicions);
-	bool mataFitxa(const Posicio& inicial, const Posicio & final);
+	bool mataFitxa(const Posicio& inicial, const Posicio & final, Posicio& morta);
 };

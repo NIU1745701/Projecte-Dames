@@ -19,42 +19,28 @@ Fitxa::Fitxa(TipusFitxa tipus, ColorFitxa color)
 
 string Fitxa::toString() const
 {
-    string caracter;
+    if (m_tipus == TIPUS_EMPTY)
+        return "_";
 
-    TipusFitxa tipus = getTipusFitxa();
-    ColorFitxa color = getColorFitxa();
-    if (tipus == TIPUS_EMPTY)
+    if (m_tipus == TIPUS_NORMAL)
     {
-        caracter = '_';
+        if (m_color == COLOR_BLANC)
+            return "O";
+        else if (m_color == COLOR_NEGRE)
+            return "X";
     }
-    else
+
+    if (m_tipus == TIPUS_DAMA)
     {
-        if (tipus == TIPUS_NORMAL)
-        {
-            if (color == COLOR_BLANC)
-            {
-                caracter = 'O';
-            }
-            else
-            {
-                caracter = 'X';
-            }
-        }
-        else
-        {
-            if (color == COLOR_BLANC)
-            {
-                caracter = 'D';
-            }
-            else
-            {
-                caracter = 'R';
-            }
-        }
+        if (m_color == COLOR_BLANC)
+            return "D";
+        else if (m_color == COLOR_NEGRE)
+            return "R";
     }
-    
-    return caracter;
+    return "_";
 }
+
+
 
 void Fitxa::setMovimentsValids(const Moviment movimentsValids[], int nMoviments)
 {
@@ -74,49 +60,47 @@ void Fitxa::getMovimentsValids(Moviment moviments[]) const
         moviments[i] = m_movimentsValids[i];
     }
 }
-ifstream& operator>>(ifstream& input, Fitxa& fitxa)
+
+istream& operator>>(istream& in, Fitxa& fitxa)
 {
-	string tipus;
-	Posicio posicio;
+    char tipusChar;
+    string posStr;
 
-    input >> tipus;
-    input >> posicio;
-
-	fitxa.setPosicio(posicio);
-
-	TipusFitxa tipusFitxa;
-	ColorFitxa colorFitxa;
-
-    if (tipus == "O")
+    if (in >> tipusChar >> posStr)
     {
-        tipusFitxa = TIPUS_NORMAL;
-        colorFitxa = COLOR_BLANC;
-    }
-    else
-    {
-        if (tipus == "X")
+        TipusFitxa tipus;
+        ColorFitxa color;
+
+        switch (tipusChar)
         {
-            tipusFitxa = TIPUS_NORMAL;
-            colorFitxa = COLOR_NEGRE;
+        case 'O':
+            tipus = TIPUS_NORMAL;
+            color = COLOR_BLANC;
+            break;
+        case 'X':
+            tipus = TIPUS_NORMAL;
+            color = COLOR_NEGRE;
+            break;
+        case 'D':
+            tipus = TIPUS_DAMA;
+            color = COLOR_BLANC;
+            break;
+        case 'R':
+            tipus = TIPUS_DAMA;
+            color = COLOR_NEGRE;
+            break;
+        default:
+            in.setstate(ios::failbit);
+            return in;
         }
-        else
-        {
-            if (tipus == "D")
-            {
-                tipusFitxa = TIPUS_DAMA;
-                colorFitxa = COLOR_BLANC;
-            }
-            else
-            {
-                tipusFitxa = TIPUS_DAMA;
-                colorFitxa = COLOR_NEGRE;
-            }
-        }
+
+        Posicio pos;
+        pos.fromString(posStr);
+
+        fitxa.setTipus(tipus);
+        fitxa.setColor(color);
+        fitxa.setPosicio(pos);
     }
 
-
-	fitxa.setColor(colorFitxa);
-	fitxa.setTipus(tipusFitxa);
-
-	return input;
+    return in;
 }

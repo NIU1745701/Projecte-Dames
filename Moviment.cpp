@@ -17,6 +17,23 @@ Moviment::Moviment(const Posicio& posicioInicial)
 	m_nPosicions = 1;
 	m_nFitxesEliminades = 0;
 }
+void Moviment::setInici(const Posicio& inici)
+{
+	m_posicions[0] = inici;
+}
+
+void Moviment::setFinal(const Posicio & final)
+{
+	if (m_nPosicions > 0)
+	{
+		m_posicions[m_nPosicions - 1] = final;
+	}
+}
+
+void Moviment::setNFitxesEliminades(int n)
+{
+	m_nFitxesEliminades = n;
+}
 
 void Moviment::getInici(int& fila, int& columna) const
 {

@@ -49,6 +49,6 @@ private:
 	int m_nMovimentsValids;
 };
 
-ifstream& operator>>(ifstream& input, Fitxa& fitxa);
+istream& operator>>(istream& input, Fitxa& fitxa);
 
 #endif
