@@ -1,4 +1,6 @@
 #include "Fitxa.h"
+#include "tauler.hpp"
+#include "posicio.hpp"
 
 Fitxa::Fitxa(Posicio posicioInicial, TipusFitxa tipus, ColorFitxa color)
 {
@@ -21,39 +23,36 @@ string Fitxa::toString() const
 
     TipusFitxa tipus = getTipusFitxa();
     ColorFitxa color = getColorFitxa();
-
-    switch (tipus)
+    if (tipus == TIPUS_EMPTY)
     {
-    case TIPUS_EMPTY:
         caracter = '_';
-        break;
-
-    case TIPUS_NORMAL:
-        if (color == COLOR_BLANC)
-        {
-            caracter = 'O';
-        }
-        else
-        {
-            caracter = 'X';
-        }
-        break;
-
-    case TIPUS_DAMA:
-        if (color == COLOR_BLANC)
-        {
-            caracter = 'D';
-        }
-        else
-        {
-            caracter = 'R';
-        }
-        break;
-
-    default:
-        break;
     }
-
+    else
+    {
+        if (tipus == TIPUS_NORMAL)
+        {
+            if (color == COLOR_BLANC)
+            {
+                caracter = 'O';
+            }
+            else
+            {
+                caracter = 'X';
+            }
+        }
+        else
+        {
+            if (color == COLOR_BLANC)
+            {
+                caracter = 'D';
+            }
+            else
+            {
+                caracter = 'R';
+            }
+        }
+    }
+    
     return caracter;
 }
 
@@ -74,4 +73,50 @@ void Fitxa::getMovimentsValids(Moviment moviments[]) const
     {
         moviments[i] = m_movimentsValids[i];
     }
+}
+ifstream& operator>>(ifstream& input, Fitxa& fitxa)
+{
+	string tipus;
+	Posicio posicio;
+
+    input >> tipus;
+    input >> posicio;
+
+	fitxa.setPosicio(posicio);
+
+	TipusFitxa tipusFitxa;
+	ColorFitxa colorFitxa;
+
+    if (tipus == "O")
+    {
+        tipusFitxa = TIPUS_NORMAL;
+        colorFitxa = COLOR_BLANC;
+    }
+    else
+    {
+        if (tipus == "X")
+        {
+            tipusFitxa = TIPUS_NORMAL;
+            colorFitxa = COLOR_NEGRE;
+        }
+        else
+        {
+            if (tipus == "D")
+            {
+                tipusFitxa = TIPUS_DAMA;
+                colorFitxa = COLOR_BLANC;
+            }
+            else
+            {
+                tipusFitxa = TIPUS_DAMA;
+                colorFitxa = COLOR_NEGRE;
+            }
+        }
+    }
+
+
+	fitxa.setColor(colorFitxa);
+	fitxa.setTipus(tipusFitxa);
+
+	return input;
 }

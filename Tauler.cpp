@@ -1,4 +1,4 @@
-#include "Tauler.h"
+#include "tauler.hpp"
 
 void Tauler::afegeixFitxa(const Fitxa& fitxa)
 {
@@ -63,6 +63,7 @@ string Tauler::toString() const
 	}
 
 	tauler = tauler + " A B C D E F G H";
+	return tauler;
 }
 
 //Metodes per moure fitxa
@@ -680,7 +681,7 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color, Posi
 	nPosicions = 0;
 	Posicio pos;
 	// Matriu amb els despla aments
-	int despla aments[4][2] = {
+	int desplacaments[4][2] = {
 		{  1,  1 }, // inferior dreta
 		{  1, -1 }, // inferior esquerra
 		{ -1,  1 }, // superior dreta
@@ -692,8 +693,8 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color, Posi
 
 	for (int i = 0; i < 4; ++i)
 	{
-		int sumaFila = despla aments[i][0];
-		int sumaColumna = despla aments[i][1];
+		int sumaFila = desplacaments[i][0];
+		int sumaColumna = desplacaments[i][1];
 		int f1 = f0 + sumaFila;
 		int c1 = c0 + sumaColumna;
 

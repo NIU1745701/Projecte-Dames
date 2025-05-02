@@ -1,4 +1,5 @@
 #include "Moviment.h"
+#include "tauler.hpp"
 
 Moviment::Moviment(int fila0, int columna0)
 {

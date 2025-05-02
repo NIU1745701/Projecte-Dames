@@ -1,5 +1,6 @@
-#include "Posicio.h"
-
+#include "posicio.hpp"
+#ifndef MOVIMENT_H
+#define MOVIMENT_H
 #define MAX_FITXES_ELIMINADES 11
 #define MAX_POSICIONS 12
 
@@ -32,3 +33,4 @@ private:
 	Posicio m_fitxesEliminades[MAX_FITXES_ELIMINADES];
 	int m_nFitxesEliminades;
 };
+#endif

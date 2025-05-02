@@ -1,4 +1,6 @@
-#include "Posicio.h"
+#ifndef FITXA_H
+#define FITXA_H
+#include "posicio.hpp"
 #include "Moviment.h"
 #include <fstream>
 #include <string>
@@ -37,6 +39,7 @@ public:
 	void convertirDama() { m_tipus = TIPUS_DAMA; }
 	void setMovimentsValids(const Moviment movimentsValids[], int nMoviments);
 
+
 private:
 	Posicio m_posicio;
 	TipusFitxa m_tipus;
@@ -46,90 +49,6 @@ private:
 	int m_nMovimentsValids;
 };
 
-ifstream& operator >>(ifstream& input, Fitxa& fitxa)
-{
-	char tipus;
-	Posicio posicio;
+ifstream& operator>>(ifstream& input, Fitxa& fitxa);
 
-	input >> tipus >> posicio;
-
-	fitxa.setPosicio(posicio);
-
-	TipusFitxa tipusFitxa;
-	ColorFitxa colorFitxa;
-
-	switch (tipus)
-	{
-	case 'O':
-		tipusFitxa = TIPUS_NORMAL;
-		colorFitxa = COLOR_BLANC;
-		break;
-
-	case 'X':
-		tipusFitxa = TIPUS_NORMAL;
-		colorFitxa = COLOR_NEGRE;
-		break;
-
-	case 'D':
-		tipusFitxa = TIPUS_DAMA;
-		colorFitxa = COLOR_BLANC;
-		break;
-
-	case 'R':
-		tipusFitxa = TIPUS_DAMA;
-		colorFitxa = COLOR_NEGRE;
-		break;
-
-	default:
-		break;
-	}
-
-	fitxa.setColor(colorFitxa);
-	fitxa.setTipus(tipusFitxa);
-
-	return input;
-}
-
-istream& operator >>(istream& input, Fitxa& fitxa)
-{
-	char tipus;
-	Posicio posicio;
-
-	input >> tipus >> posicio;
-
-	fitxa.setPosicio(posicio);
-
-	TipusFitxa tipusFitxa;
-	ColorFitxa colorFitxa;
-
-	switch (tipus)
-	{
-	case 'O':
-		tipusFitxa = TIPUS_NORMAL;
-		colorFitxa = COLOR_BLANC;
-		break;
-
-	case 'X':
-		tipusFitxa = TIPUS_NORMAL;
-		colorFitxa = COLOR_NEGRE;
-		break;
-
-	case 'D':
-		tipusFitxa = TIPUS_DAMA;
-		colorFitxa = COLOR_BLANC;
-		break;
-
-	case 'R':
-		tipusFitxa = TIPUS_DAMA;
-		colorFitxa = COLOR_NEGRE;
-		break;
-
-	default:
-		break;
-	}
-
-	fitxa.setColor(colorFitxa);
-	fitxa.setTipus(tipusFitxa);
-
-	return input;
-}
+#endif
