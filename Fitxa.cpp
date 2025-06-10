@@ -1,66 +1,34 @@
 #include "Fitxa.h"
-#include "tauler.hpp"
-#include "posicio.hpp"
 
 Fitxa::Fitxa(Posicio posicioInicial, TipusFitxa tipus, ColorFitxa color)
-{
-    m_posicio = posicioInicial;
-    m_tipus = tipus;
-    m_color = color;
-    m_nMovimentsValids = 0;
-}
+    : m_posicio(posicioInicial), m_tipus(tipus), m_color(color), m_nMovimentsValids(0) {}
 
 Fitxa::Fitxa(TipusFitxa tipus, ColorFitxa color)
-{
-    m_tipus = tipus;
-    m_color = color;
-    m_nMovimentsValids = 0;
-}
+    : m_tipus(tipus), m_color(color), m_nMovimentsValids(0) {}
 
 string Fitxa::toString() const
 {
-    if (m_tipus == TIPUS_EMPTY)
-        return "_";
+    if (m_tipus == TIPUS_EMPTY) return "_";
 
     if (m_tipus == TIPUS_NORMAL)
-    {
-        if (m_color == COLOR_BLANC)
-            return "O";
-        else if (m_color == COLOR_NEGRE)
-            return "X";
-    }
+        return (m_color == COLOR_BLANC) ? "O" : "X";
 
     if (m_tipus == TIPUS_DAMA)
-    {
-        if (m_color == COLOR_BLANC)
-            return "D";
-        else if (m_color == COLOR_NEGRE)
-            return "R";
-    }
+        return (m_color == COLOR_BLANC) ? "D" : "R";
+
     return "_";
 }
 
-
-
-void Fitxa::setMovimentsValids(const Moviment movimentsValids[], int nMoviments)
+void Fitxa::getMovimentsValids(vector<Moviment>& moviments) const
 {
-    int i;
-
-    for (i = 0; i < nMoviments; i++)
-    {
-        m_movimentsValids[i] = movimentsValids[i];
-    }
+    moviments = m_movimentsValids;
 }
 
-void Fitxa::getMovimentsValids(Moviment moviments[]) const
+void Fitxa::setMovimentsValids(const vector<Moviment>& moviments)
 {
-    int i;
-    for (i = 0; i < m_nMovimentsValids; i++)
-    {
-        moviments[i] = m_movimentsValids[i];
-    }
+    m_movimentsValids = moviments;
+    m_nMovimentsValids = static_cast<int>(moviments.size());
 }
-
 istream& operator>>(istream& in, Fitxa& fitxa)
 {
     char tipusChar;
@@ -73,22 +41,10 @@ istream& operator>>(istream& in, Fitxa& fitxa)
 
         switch (tipusChar)
         {
-        case 'O':
-            tipus = TIPUS_NORMAL;
-            color = COLOR_BLANC;
-            break;
-        case 'X':
-            tipus = TIPUS_NORMAL;
-            color = COLOR_NEGRE;
-            break;
-        case 'D':
-            tipus = TIPUS_DAMA;
-            color = COLOR_BLANC;
-            break;
-        case 'R':
-            tipus = TIPUS_DAMA;
-            color = COLOR_NEGRE;
-            break;
+        case 'O': tipus = TIPUS_NORMAL; color = COLOR_BLANC; break;
+        case 'X': tipus = TIPUS_NORMAL; color = COLOR_NEGRE; break;
+        case 'D': tipus = TIPUS_DAMA;   color = COLOR_BLANC; break;
+        case 'R': tipus = TIPUS_DAMA;   color = COLOR_NEGRE; break;
         default:
             in.setstate(ios::failbit);
             return in;

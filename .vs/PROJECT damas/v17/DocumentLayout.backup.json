@@ -3,14 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\Posicio.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Posicio.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\posicio.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:posicio.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\Fitxa.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Fitxa.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
@@ -25,6 +17,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\Moviment.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Moviment.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\Posicio.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:Posicio.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\posicio.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:posicio.hpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Administrador\\Documents\\PROJECT damas\\tauler.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -46,7 +46,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 6,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -76,7 +76,7 @@
               "RelativeDocumentMoniker": "tauler.hpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\tauler.hpp",
               "RelativeToolTip": "tauler.hpp",
-              "ViewState": "AgIAABMAAAAAAAAAAAAwwC0AAAACAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAAAYwC4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-05-01T14:48:08.236Z",
               "EditorCaption": ""
@@ -89,85 +89,85 @@
               "RelativeDocumentMoniker": "tauler.cpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\tauler.cpp",
               "RelativeToolTip": "tauler.cpp",
-              "ViewState": "AgIAALsCAAAAAAAAAAAwwNUCAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAG4CAAAAAAAAAAAYwIACAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-01T14:48:05.166Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 5,
               "Title": "posicio.hpp",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\posicio.hpp",
               "RelativeDocumentMoniker": "posicio.hpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\posicio.hpp",
               "RelativeToolTip": "posicio.hpp",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAwwCAAAAATAAAAAAAAAA==",
+              "ViewState": "AgIAABEAAAAAAAAAAAAYwCMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-05-01T14:48:03.785Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "Posicio.cpp",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Posicio.cpp",
               "RelativeDocumentMoniker": "Posicio.cpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Posicio.cpp",
               "RelativeToolTip": "Posicio.cpp",
-              "ViewState": "AgIAAA4AAAAAAAAAAAAwwCgAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAYwDEAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-01T14:48:03.237Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 3,
               "Title": "Moviment.h",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Moviment.h",
               "RelativeDocumentMoniker": "Moviment.h",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Moviment.h",
               "RelativeToolTip": "Moviment.h",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAwwCYAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAABMAAAAAAAAAAAAYwCUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-05-01T14:48:02.723Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
               "Title": "Moviment.cpp",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Moviment.cpp",
               "RelativeDocumentMoniker": "Moviment.cpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Moviment.cpp",
               "RelativeToolTip": "Moviment.cpp",
-              "ViewState": "AgIAAEcAAAAAAAAAAAAwwGEAAAABAAAAAAAAAA==",
+              "ViewState": "AgIAADwAAAAAAAAAAAAYwE4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-01T14:48:01.925Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 1,
               "Title": "Fitxa.h",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Fitxa.h",
               "RelativeDocumentMoniker": "Fitxa.h",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Fitxa.h",
               "RelativeToolTip": "Fitxa.h",
-              "ViewState": "AgIAABsAAAAAAAAAAAAwwDUAAAAGAAAAAAAAAA==",
+              "ViewState": "AgIAACMAAAAAAAAAAAAYwDUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-05-01T14:48:00.668Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Fitxa.cpp",
               "DocumentMoniker": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Fitxa.cpp",
               "RelativeDocumentMoniker": "Fitxa.cpp",
               "ToolTip": "C:\\Users\\Administrador\\Documents\\PROJECT damas\\Fitxa.cpp",
               "RelativeToolTip": "Fitxa.cpp",
-              "ViewState": "AgIAAFAAAAAAAAAAAAAwwGoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAD4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-05-01T14:47:52.853Z",
               "EditorCaption": ""
