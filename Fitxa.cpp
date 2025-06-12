@@ -1,5 +1,6 @@
 #include "Fitxa.h"
 
+
 Fitxa::Fitxa(Posicio posicioInicial, TipusFitxa tipus, ColorFitxa color)
     : m_posicio(posicioInicial), m_tipus(tipus), m_color(color), m_nMovimentsValids(0) {}
 
@@ -8,15 +9,37 @@ Fitxa::Fitxa(TipusFitxa tipus, ColorFitxa color)
 
 string Fitxa::toString() const
 {
-    if (m_tipus == TIPUS_EMPTY) return "_";
+    {
+        if (m_tipus == TIPUS_EMPTY)
+        {
+            return "_";
+        }
 
-    if (m_tipus == TIPUS_NORMAL)
-        return (m_color == COLOR_BLANC) ? "O" : "X";
+        if (m_tipus == TIPUS_NORMAL)
+        {
+            if (m_color == COLOR_BLANC)
+            {
+                return "O";
+            }
+            else
+            {
+                return "X";
+            }
+        }
 
-    if (m_tipus == TIPUS_DAMA)
-        return (m_color == COLOR_BLANC) ? "D" : "R";
-
-    return "_";
+        if (m_tipus == TIPUS_DAMA)
+        {
+            if (m_color == COLOR_BLANC)
+            {
+                return "D";
+            }
+            else
+            {
+                return "R";
+            }
+        }
+        return "_";
+    }
 }
 
 void Fitxa::getMovimentsValids(vector<Moviment>& moviments) const
@@ -60,3 +83,4 @@ istream& operator>>(istream& in, Fitxa& fitxa)
 
     return in;
 }
+

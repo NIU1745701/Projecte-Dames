@@ -24,7 +24,8 @@ private:
 
     void afegeixFitxa(const Fitxa& fitxa);
     void inicialitzaEmpty();
-    void bufarFitxa(const Posicio& origenMoviment, const Moviment& movimentFet, ColorFitxa tornActual);
+    void bufarFitxa(const Posicio& origenMoviment, const Posicio& destiMoviment,
+        const Moviment& movimentFet, ColorFitxa tornActual);
     void getPosicionsSimples(const Posicio& origen, ColorFitxa color, TipusFitxa tipus, int& nPosicions, Posicio posicions[]) const;
     bool esCaptura(const Posicio& origen, const Posicio& desti) const;
     Posicio getFitxaCapturada(const Posicio& origen, const Posicio& desti) const;
@@ -34,12 +35,15 @@ private:
     Moviment getMillorMovimentDeFitxa(int fila, int col) const;
 
     void trobaMovimentsValids(Fitxa& fitxa);
+
     void trobaMovimentsValidsNormal(const Posicio& posicio, ColorFitxa color, vector<Moviment>& moviments);
+
     void trobaMovimentsValidsDama(const Posicio& posicio, ColorFitxa color, vector<Moviment>& moviments);
     void posicionsValidesNormal(const Posicio& posicio, ColorFitxa color, Posicio posicions[], int& nPosicions);
     void posicionsValidesDama(const Posicio& posicio, ColorFitxa color,
-        vector<Posicio>& posicions,
+        vector<Posicio>& posicions, int& incrementPendents,
         const vector<Posicio>& posicionsVisitades);
+
     bool mataFitxa(const Posicio& inicial, const Posicio & final, Posicio& morta);
 };
 

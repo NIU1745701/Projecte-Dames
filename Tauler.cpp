@@ -56,15 +56,15 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 	const Fitxa& fitxa = m_tauler[origen.getFila()][origen.getColumna()];
 	if (fitxa.getTipusFitxa() == TIPUS_EMPTY)
 		return false;
+
 	vector<Moviment> moviments;
 	fitxa.getMovimentsValids(moviments);
+
 	Moviment movimentFet;
 	bool movimentValid = false;
-	Posicio posicioFinal;
 	for (size_t i = 0; i < moviments.size(); ++i)
 	{
-		posicioFinal = moviments[i].getFinal();
-		if (posicioFinal == desti)
+		if (moviments[i].getFinal() == desti)
 		{
 			movimentFet = moviments[i];
 			movimentValid = true;
@@ -76,68 +76,69 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 
 	vector<Posicio> fitxesEliminades;
 	movimentFet.getEliminades(fitxesEliminades);
-	for (size_t i = 0; i < fitxesEliminades.size(); i++)
+	for (size_t i = 0; i < fitxesEliminades.size(); ++i)
 	{
 		Fitxa fitxaEmpty(fitxesEliminades[i], TIPUS_EMPTY, COLOR_BLANC);
 		afegeixFitxa(fitxaEmpty);
 	}
-	m_tauler[desti.getFila()][desti.getColumna()] = fitxa;
-	m_tauler[origen.getFila()][origen.getColumna()] = Fitxa();
+
+	Fitxa novaFitxa = fitxa;
+	novaFitxa.setPosicio(desti);
 	if (fitxa.getTipusFitxa() == TIPUS_NORMAL)
 	{
-		if ((fitxa.getColorFitxa() == COLOR_BLANC && desti.getFila() == 0) ||
-			(fitxa.getColorFitxa() == COLOR_NEGRE && desti.getFila() == 7))
-		{
-			m_tauler[desti.getFila()][desti.getColumna()].convertirDama();
-		}
+		bool promocioBlanca = (fitxa.getColorFitxa() == COLOR_BLANC && desti.getFila() == N_FILES - 1);
+		bool promocioNegra = (fitxa.getColorFitxa() == COLOR_NEGRE && desti.getFila() == 0);
+		if (promocioBlanca || promocioNegra)
+			novaFitxa.convertirDama();
 	}
+	m_tauler[desti.getFila()][desti.getColumna()] = novaFitxa;
+	m_tauler[origen.getFila()][origen.getColumna()] = Fitxa();
+
 	actualitzaMovimentsValids();
-	bufarFitxa(origen, movimentFet, fitxa.getColorFitxa());
+	bufarFitxa(origen, desti, movimentFet, fitxa.getColorFitxa());
+
 	return true;
 }
 
-
-void Tauler::bufarFitxa(const Posicio& origenMoviment, const Moviment& movimentFet, ColorFitxa tornActual)
+void Tauler::bufarFitxa(const Posicio& origenMoviment,
+	const Posicio& destiMoviment,
+	const Moviment& movimentFet,
+	ColorFitxa tornActual)
 {
 	int capturesFetes = movimentFet.getnFitxesEliminades();
 	int damesFetes = getNumDamesCapturades(movimentFet);
-	int maxCaptures = capturesFetes;
-	int maxDames = damesFetes;
-	Posicio millorFitxa;
-	bool trobat = false;
-	for (int fila = 0; fila < N_FILES; fila++)
-	{
-		for (int col = 0; col < N_COLUMNES; col++)
-		{
-			const Fitxa& f = m_tauler[fila][col];
-			if (f.getColorFitxa() == tornActual && f.getTipusFitxa() != TIPUS_EMPTY)
-			{
-				Moviment millor = getMillorMovimentDeFitxa(fila, col);
-				if (millor.esCaptura())
-				{
-					int captures = millor.getnFitxesEliminades();
-					int dames = getNumDamesCapturades(millor);
-					bool millorQueFet = (captures > maxCaptures) || (captures == maxCaptures && dames > maxDames);
 
-					if (millorQueFet && !(fila == origenMoviment.getFila() && col == origenMoviment.getColumna()))
+	Moviment millorMovimentDeLaFitxa = getMillorMovimentDeFitxa(origenMoviment.getFila(), origenMoviment.getColumna());
+	int maxCapturesDeLaFitxa = millorMovimentDeLaFitxa.getnFitxesEliminades();
+	int maxDamesDeLaFitxa = getNumDamesCapturades(millorMovimentDeLaFitxa);
+
+	if (capturesFetes < maxCapturesDeLaFitxa || (capturesFetes == maxCapturesDeLaFitxa && damesFetes < maxDamesDeLaFitxa))
+	{
+		afegeixFitxa(Fitxa(destiMoviment, TIPUS_EMPTY, COLOR_BLANC));
+		return;
+	}
+
+	if (capturesFetes == 0)
+	{
+		for (int i = 0; i < N_FILES; ++i)
+		{
+			for (int j = 0; j < N_COLUMNES; ++j)
+			{
+				Posicio posActual(i, j);
+				if (posActual == origenMoviment) continue;
+				const Fitxa& fitxaActual = m_tauler[i][j];
+				if (fitxaActual.getTipusFitxa() != TIPUS_EMPTY && fitxaActual.getColorFitxa() == tornActual)
+				{
+					Moviment millorMovimentLocal = getMillorMovimentDeFitxa(i, j);
+					if (millorMovimentLocal.esCaptura())
 					{
-						maxCaptures = captures;
-						maxDames = dames;
-						millorFitxa = Posicio(fila, col);
-						trobat = true;
+						afegeixFitxa(Fitxa(posActual, TIPUS_EMPTY, COLOR_BLANC));
 					}
 				}
 			}
 		}
 	}
-	if (trobat)
-	{
-		Fitxa fitxaEmpty(millorFitxa, TIPUS_EMPTY, COLOR_BLANC);
-		afegeixFitxa(fitxaEmpty);
-	}
 }
-
-
 Moviment Tauler::getMillorMovimentDeFitxa(int fila, int col) const
 {
 	Moviment millor;
@@ -327,36 +328,56 @@ void Tauler::trobaMovimentsValidsNormal(const Posicio& posicio, ColorFitxa color
 	vector<Posicio> posicionsValides(2);
 	int incrementPendents = 0;
 	Posicio eliminada;
+	bool stopEliminades;
+	bool fitxaEliminada;
 	while (!movimentsPendents.empty())
 	{
+		stopEliminades = false;
+		fitxaEliminada = false;
 		movimentActual = movimentsPendents.front();
 		movimentsPendents.erase(movimentsPendents.begin());
 		posicioActual = movimentActual.getFinal();
 		posicionsValidesNormal(posicioActual, color, posicionsValides.data(), incrementPendents);
-		while (incrementPendents > 0)
+		while (incrementPendents > 0 && !stopEliminades)
 		{
-			movimentActual.afegirPosicio(posicionsValides[0]);
-			if (mataFitxa(posicioActual, posicionsValides[0], eliminada))
-			{
-				movimentActual.afegirFitxaEliminada(eliminada);
-			}
-			for (int i = 1; i < incrementPendents; ++i)
+			for (int i = 1; i < incrementPendents; i++)
 			{
 				Moviment movimentPendent = movimentActual;
 				movimentPendent.afegirPosicio(posicionsValides[i]);
 				if (mataFitxa(posicioActual, posicionsValides[i], eliminada))
 				{
 					movimentPendent.afegirFitxaEliminada(eliminada);
+					movimentsPendents.push_back(movimentPendent);
 				}
-				movimentsPendents.push_back(movimentPendent);
+
+				moviments.push_back(movimentPendent);
 			}
+
+			movimentActual.afegirPosicio(posicionsValides[0]);
+			if (mataFitxa(posicioActual, posicionsValides[0], eliminada))
+			{
+				movimentActual.afegirFitxaEliminada(eliminada);
+				fitxaEliminada = true;
+			}
+			else
+			{
+				stopEliminades = true;
+			}
+
 			posicioActual = posicionsValides[0];
 			posicionsValidesNormal(posicioActual, color, posicionsValides.data(), incrementPendents);
-		}
+			if (fitxaEliminada)
+			{
+				if (!mataFitxa(posicioActual, posicionsValides[0], eliminada))
+				{
+					stopEliminades = true;
+				}
+			}
 
-		if (!(movimentActual.getFinal() == movimentActual.getInici()))
-		{
-			moviments.push_back(movimentActual);
+			if (!(movimentActual.getFinal() == movimentActual.getInici()))
+			{
+				moviments.push_back(movimentActual);
+			}
 		}
 	}
 }
@@ -364,58 +385,103 @@ void Tauler::trobaMovimentsValidsNormal(const Posicio& posicio, ColorFitxa color
 void Tauler::trobaMovimentsValidsDama(const Posicio& posicio, ColorFitxa color, vector<Moviment>& moviments)
 {
 	moviments.clear();
-	vector<Moviment> movimentsPendents;
-	vector<Posicio> posicionsVisitades;
-	Moviment movimentInicial;
-	movimentInicial.afegirPosicio(posicio);
-	movimentsPendents.push_back(movimentInicial);
+	vector<Moviment> movimentsSimples;
+	vector<Moviment> movimentsCaptura;
 
-	while (!movimentsPendents.empty())
+	vector<Moviment> pendents;
+	Moviment movInicial(posicio);
+	pendents.push_back(movInicial);
+
+	vector<Posicio> fitxesJaCapturadesEnAquestCamí;
+
+	int direccions[4][2] = { {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
+
+	while (!pendents.empty())
 	{
-		Moviment movimentActual = movimentsPendents.back();
-		movimentsPendents.pop_back();
+		Moviment movActual = pendents.back();
+		pendents.pop_back();
+		Posicio posActual = movActual.getFinal();
+		movActual.getEliminades(fitxesJaCapturadesEnAquestCamí);
 
-		Posicio posicioActual = movimentActual.getFinal();
-		bool jaVisitada = false;
-		for (size_t i = 0; i < posicionsVisitades.size(); ++i)
+		bool haTrobatNovaCaptura = false;
+
+		for (int i = 0; i < 4; ++i)
 		{
-			if (posicionsVisitades[i] == posicioActual)
-			{
-				jaVisitada = true;
-				break;
-			}
-		}
-		if (jaVisitada)
-			continue;
-		posicionsVisitades.push_back(posicioActual);
-		vector<Posicio> posicionsValides;
-		posicionsValidesDama(posicioActual, color, posicionsValides, posicionsVisitades);
+			Posicio posFitxaAcapturar(-1, -1);
+			int df = direccions[i][0];
+			int dc = direccions[i][1];
 
-		if (!posicionsValides.empty())
-		{
-			for (size_t i = 0; i < posicionsValides.size(); ++i)
+			for (int d = 1; d < N_FILES; ++d)
 			{
-				Posicio novaPosicio = posicionsValides[i];
-				Moviment nouMoviment = movimentActual;
-				nouMoviment.afegirPosicio(novaPosicio);
+				int nf = posActual.getFila() + d * df;
+				int nc = posActual.getColumna() + d * dc;
 
-				Posicio fitxaEliminada;
-				if (mataFitxa(posicioActual, novaPosicio, fitxaEliminada))
+				if (!esPosicioValida(nf, nc)) break;
+
+				Fitxa fitxaActual = m_tauler[nf][nc];
+
+				if (posFitxaAcapturar.getFila() == -1)
 				{
-					nouMoviment.afegirFitxaEliminada(fitxaEliminada);
+					if (fitxaActual.getTipusFitxa() == TIPUS_EMPTY)
+					{
+						if (movActual.getnFitxesEliminades() == 0)
+						{
+							Moviment movSimple = movActual;
+							movSimple.afegirPosicio(Posicio(nf, nc));
+							movimentsSimples.push_back(movSimple);
+						}
+					}
+					else if (fitxaActual.getColorFitxa() != color)
+					{
+						posFitxaAcapturar.setPosicio(nf, nc);
+					}
+					else
+					{
+						break;
+					}
 				}
-				movimentsPendents.push_back(nouMoviment);
+				else
+				{
+					if (fitxaActual.getTipusFitxa() == TIPUS_EMPTY)
+					{
+						bool jaCapturada = false;
+						for (size_t j = 0; j < fitxesJaCapturadesEnAquestCamí.size(); ++j)
+						{
+							const Posicio& eliminada = fitxesJaCapturadesEnAquestCamí[j];
+							if (eliminada == posFitxaAcapturar)
+							{
+								jaCapturada = true;
+								break;
+							}
+						}
+						if (!jaCapturada)
+						{
+							haTrobatNovaCaptura = true;
+							Moviment nouMoviment = movActual;
+							nouMoviment.afegirPosicio(Posicio(nf, nc));
+							nouMoviment.afegirFitxaEliminada(posFitxaAcapturar);
+							movimentsCaptura.push_back(nouMoviment);
+							pendents.push_back(nouMoviment);
+						}
+					}
+					else
+					{
+						break;
+					}
+				}
 			}
 		}
-		else
-			if (!(movimentActual.getFinal() == movimentActual.getInici()))
-			{
-				moviments.push_back(movimentActual);
-			}
+	}
+
+	if (!movimentsCaptura.empty())
+	{
+		moviments = movimentsCaptura;
+	}
+	else
+	{
+		moviments = movimentsSimples;
 	}
 }
-
-
 void Tauler::posicionsValidesNormal(const Posicio& posicio, ColorFitxa color, Posicio posicions[], int& nPosicions)
 {
 	nPosicions = 0;
@@ -554,9 +620,10 @@ void Tauler::posicionsValidesNormal(const Posicio& posicio, ColorFitxa color, Po
 }
 
 void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color,
-	vector<Posicio>& posicions,
+	vector<Posicio>& posicions, int& incrementPendents,
 	const vector<Posicio>& posicionsVisitades)
 {
+	incrementPendents = 0;
 	posicions.clear();
 	Posicio pos;
 
@@ -583,7 +650,6 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color,
 			{
 				pos.setFila(f1);
 				pos.setColumna(c1);
-
 				bool visitada = false;
 				for (size_t j = 0; j < posicionsVisitades.size(); ++j)
 				{
@@ -593,9 +659,11 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color,
 						break;
 					}
 				}
-
 				if (!visitada)
+				{
 					posicions.push_back(pos);
+					incrementPendents++;
+				}
 			}
 			else if (m_tauler[f1][c1].getColorFitxa() != color)
 			{
@@ -618,7 +686,10 @@ void Tauler::posicionsValidesDama(const Posicio& posicio, ColorFitxa color,
 						}
 					}
 					if (!visitada)
+					{
 						posicions.push_back(pos);
+						incrementPendents++;
+					}
 				}
 			}
 		}
@@ -629,7 +700,6 @@ bool Tauler::mataFitxa(const Posicio& inicial, const Posicio & final, Posicio& m
 {
 	int despFila = final.getFila() - inicial.getFila();
 	int despColumna = final.getColumna() - inicial.getColumna();
-
 	if (abs(despFila) == 2 && abs(despColumna) == 2)
 	{
 		int filaMitja = inicial.getFila() + despFila / 2;

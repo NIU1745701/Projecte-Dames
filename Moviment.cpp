@@ -62,7 +62,14 @@ void Moviment::getFinal(int& fila, int& columna) const
 
 Posicio Moviment::getFinal() const
 {
-    return (m_nPosicions > 0) ? m_posicions[m_nPosicions - 1] : Posicio();
+    if (m_nPosicions > 0)
+    {
+        return m_posicions[m_nPosicions - 1];
+    }
+    else
+    {
+        return Posicio();
+    }
 }
 
 void Moviment::afegirPosicio(const Posicio& posicio)
