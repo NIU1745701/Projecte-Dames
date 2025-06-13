@@ -2,7 +2,7 @@
 #ifndef JOC_H
 #define JOC_H
 
-#include "C:\Users\rasub\source\repos\Dames_llibreriaGrafica\0. C++ Code\Logic Game\tauler.hpp"
+#include "tauler.hpp"
 #include "CuaMoviments.h"
 #include "info_joc.hpp"
 #include <vector>
